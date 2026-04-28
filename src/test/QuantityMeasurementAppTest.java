@@ -1,84 +1,77 @@
 package src.test;
 
 import org.junit.jupiter.api.Test;
+import src.main.Length;
 import src.main.QuantityMeasurementApp;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class QuantityMeasurementAppTest{
     @Test
-    void testFeetEquality_SameValue(){
-        QuantityMeasurementApp.Feet feet1=new QuantityMeasurementApp.Feet(1.0);
-        QuantityMeasurementApp.Feet feet2=new QuantityMeasurementApp.Feet(1.0);
-        boolean result=feet1.equals(feet2);
-        assertTrue(result,"Expected 1.0 ft to be equal to 1.0 ft");
+    void testEquality_FeetToFeet_SameValue(){
+        Length l1=new Length(1.0,Length.LengthUnit.FEET);
+        Length l2=new Length(1.0,Length.LengthUnit.FEET);
+        assertTrue(l1.equals(l2),"1 ft should equal 1 ft");
     }
 
     @Test
-    void testFeetEquality_DifferentValue(){
-        QuantityMeasurementApp.Feet feet1=new QuantityMeasurementApp.Feet(1.0);
-        QuantityMeasurementApp.Feet feet2=new QuantityMeasurementApp.Feet(2.0);
-        boolean result=feet1.equals(feet2);
-        assertFalse(result,"Expected 1.0 ft to NOT be equal to 2.0 ft");
+    void testEquality_InchToInch_SameValue(){
+        Length l1=new Length(1.0,Length.LengthUnit.INCHES);
+        Length l2=new Length(1.0,Length.LengthUnit.INCHES);
+        assertTrue(l1.equals(l2),"1 inch should equal 1 inch");
     }
 
     @Test
-    void testFeetEquality_NullComparison(){
-        QuantityMeasurementApp.Feet feet=new QuantityMeasurementApp.Feet(1.0);
-        boolean result=feet.equals(null);
-        assertFalse(result,"Expected value to NOT be equal to null");
+    void testEquality_FeetToInch_EquivalentValue(){
+        Length l1=new Length(1.0,Length.LengthUnit.FEET);
+        Length l2=new Length(12.0,Length.LengthUnit.INCHES);
+        assertTrue(l1.equals(l2),"1 ft should equal 12 inches");
     }
 
     @Test
-    void testFeetEquality_NonNumericInput(){
-        QuantityMeasurementApp.Feet feet=new QuantityMeasurementApp.Feet(1.0);
-        Object nonNumeric="Not a number";
-        boolean result=feet.equals(nonNumeric);
-        assertFalse(result,"Expected value to NOT be equal to non-numeric input");
+    void testEquality_InchToFeet_EquivalentValue(){
+        Length l1=new Length(12.0,Length.LengthUnit.INCHES);
+        Length l2=new Length(1.0,Length.LengthUnit.FEET);
+        assertTrue(l1.equals(l2),"12 inches should equal 1 ft (symmetry)");
     }
 
     @Test
-    void testFeetEquality_SameReference() {
-        QuantityMeasurementApp.Feet feet=new QuantityMeasurementApp.Feet(1.0);
-        boolean result=feet.equals(feet);
-        assertTrue(result,"Expected object to be equal to itself");
+    void testEquality_FeetToFeet_DifferentValue(){
+        Length l1=new Length(1.0,Length.LengthUnit.FEET);
+        Length l2=new Length(2.0,Length.LengthUnit.FEET);
+        assertFalse(l1.equals(l2),"1 ft should NOT equal 2 ft");
     }
 
     @Test
-    void testInchesEquality_SameValue(){
-        QuantityMeasurementApp.Inches inch1=new QuantityMeasurementApp.Inches(1.0);
-        QuantityMeasurementApp.Inches inch2=new QuantityMeasurementApp.Inches(1.0);
-        boolean result=inch1.equals(inch2);
-        assertTrue(result,"Expected 1.0 inch to be equal to 1.0 inch");
+    void testEquality_InchToInch_DifferentValue(){
+        Length l1=new Length(1.0,Length.LengthUnit.INCHES);
+        Length l2=new Length(2.0,Length.LengthUnit.INCHES);
+        assertFalse(l1.equals(l2),"1 inch should NOT equal 2 inches");
     }
 
     @Test
-    void testInchesEquality_DifferentValue(){
-        QuantityMeasurementApp.Inches inch1=new QuantityMeasurementApp.Inches(1.0);
-        QuantityMeasurementApp.Inches inch2=new QuantityMeasurementApp.Inches(2.0);
-        boolean result=inch1.equals(inch2);
-        assertFalse(result,"Expected 1.0 inch to NOT be equal to 2.0 inch");
+    void testEquality_InvalidUnit(){
+        assertThrows(IllegalArgumentException.class,()->{
+            new Length(1.0,null);
+        },"Null unit should throw exception");
     }
 
     @Test
-    void testInchesEquality_NullComparison(){
-        QuantityMeasurementApp.Inches inch=new QuantityMeasurementApp.Inches(1.0);
-        boolean result=inch.equals(null);
-        assertFalse(result,"Expected value to NOT be equal to null");
+    void testEquality_NullUnit(){
+        Length l1=new Length(1.0,Length.LengthUnit.FEET);
+        assertThrows(IllegalArgumentException.class,()->{
+            new Length(2.0,null);
+        },"Null unit should not be allowed");
     }
 
     @Test
-    void testInchesEquality_NonNumericInput(){
-        QuantityMeasurementApp.Inches inch=new QuantityMeasurementApp.Inches(1.0);
-        Object nonNumeric="Not a number";
-        boolean result=inch.equals(nonNumeric);
-        assertFalse(result,"Expected value to NOT be equal to non-numeric input");
+    void testEquality_SameReference(){
+        Length l1=new Length(1.0,Length.LengthUnit.FEET);
+        assertTrue(l1.equals(l1),"Object should equal itself");
     }
 
     @Test
-    void testInchesEquality_SameReference() {
-        QuantityMeasurementApp.Inches inch= new QuantityMeasurementApp.Inches(1.0);
-        boolean result=inch.equals(inch);
-        assertTrue(result,"Expected object to be equal to itself");
+    void testEquality_NullComparison(){
+        Length l1=new Length(1.0,Length.LengthUnit.FEET);
+        assertFalse(l1.equals(null),"Object should not equal null");
     }
 }
