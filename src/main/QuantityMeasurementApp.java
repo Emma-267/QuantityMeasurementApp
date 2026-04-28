@@ -1,34 +1,16 @@
 package src.main;
 
-//Feet and Inches measurement equality
 public class QuantityMeasurementApp{
-    public static boolean demonstrateLengthEquality(Length length1, Length length2){
-        return length1.equals(length2);
-    }
-    public static boolean demonstrateFeetEquality(){
-        Length l1=new Length(1.0,Length.LengthUnit.FEET);
-        Length l2=new Length(1.0,Length.LengthUnit.FEET);
-        boolean result=demonstrateLengthEquality(l1,l2);
-        System.out.println("Feet equality: "+result);
-        return result;
-    }
-    public static boolean demonstrateInchesEquality(){
-        Length l1=new Length(12.0,Length.LengthUnit.INCHES);
-        Length l2=new Length(12.0,Length.LengthUnit.INCHES);
-        boolean result=demonstrateLengthEquality(l1,l2);
-        System.out.println("Inches equality: "+result);
-        return result;
-    }
-    public static boolean demonstrateFeetInchesComparison(){
-        Length l1=new Length(1.0,Length.LengthUnit.FEET);
-        Length l2=new Length(12.0,Length.LengthUnit.INCHES);
-        boolean result=demonstrateLengthEquality(l1,l2);
-        System.out.println("Feet vs Inches equality: "+result);
-        return result;
+    public static boolean checkEquality(Length l1, Length l2){
+        return l1.equals(l2);
     }
     public static void main(String[] args){
-        demonstrateFeetEquality();
-        demonstrateInchesEquality();
-        demonstrateFeetInchesComparison();
+        Length feet=new Length(1.0,Length.LengthUnit.FEET);
+        Length inches=new Length(12.0,Length.LengthUnit.INCHES);
+        Length yards=new Length(1.0,Length.LengthUnit.YARDS);
+        Length cm=new Length(30.48,Length.LengthUnit.CENTIMETERS);
+        System.out.println("1 ft == 12 in: "+checkEquality(feet,inches));
+        System.out.println("1 yard == 3 ft: "+checkEquality(yards,new Length(3.0,Length.LengthUnit.FEET)));
+        System.out.println("30.48 cm == 1 ft: "+checkEquality(cm,feet));
     }
 }
