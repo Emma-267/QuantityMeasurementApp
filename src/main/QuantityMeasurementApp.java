@@ -1,6 +1,5 @@
 package src.main;
 
-//Feet and Inches measurement equality
 public class QuantityMeasurementApp{
     public static class Feet{
         private final double value;
