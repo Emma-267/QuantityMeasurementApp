@@ -1,6 +1,5 @@
 package src.main;
 
-//Feet and Inches measurement equality
 public class QuantityMeasurementApp{
     public static boolean demonstrateLengthEquality(Length length1, Length length2){
         return length1.equals(length2);
