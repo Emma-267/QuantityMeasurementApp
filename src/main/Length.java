@@ -1,4 +1,4 @@
-package src.main;
+package main;
 
 public class Length{
     private final double value;
@@ -23,8 +23,30 @@ public class Length{
         this.value=value;
         this.unit=unit;
     }
+    public double getValue(){
+        return value;
+    }
     private double toInches(){
         return unit.toBaseUnit(value);
+    }
+    private boolean compare(Length thatLength){
+        if(thatLength==null){
+            throw new IllegalArgumentException("Length to compare cannot be null");
+        }
+        return Double.compare(this.toInches(),thatLength.toInches())==0;
+    }
+    public Length convertTo(LengthUnit targetUnit){
+        if(targetUnit==null){
+            throw new IllegalArgumentException("Target unit cannot be null");
+        }
+        double valueInInches=this.toInches();
+        double convertedValue=valueInInches/targetUnit.toInchesFactor;
+        return new Length(convertedValue,targetUnit);
+    }
+
+    @Override
+    public String toString(){
+        return value+" "+unit.name();
     }
 
     @Override
