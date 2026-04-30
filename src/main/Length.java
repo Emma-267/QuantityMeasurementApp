@@ -60,4 +60,24 @@ public class Length{
     public int hashCode(){
         return Double.hashCode(toInches());
     }
+    public Length add(Length thatLength){
+        if(thatLength==null){
+            throw new IllegalArgumentException("Length to add cannot be null");
+        }
+        if(!Double.isFinite(this.value)||!Double.isFinite(thatLength.value)){
+            throw new IllegalArgumentException("Invalid numeric value");
+        }
+        double thisInInches=this.toInches();
+        double thatInInches=thatLength.toInches();
+        double sumInInches=thisInInches+thatInInches;
+        double resultValue = convertFromBaseToTargetUnit(sumInInches, this.unit);
+        resultValue = Math.round(resultValue * 1e6) / 1e6;
+        return new Length(resultValue,this.unit);
+    }
+    public double convertFromBaseToTargetUnit(double lengthInInches, LengthUnit targetUnit){
+        if(targetUnit==null){
+            throw new IllegalArgumentException("Target unit cannot be null");
+        }
+        return lengthInInches/targetUnit.toInchesFactor;
+    }
 }
