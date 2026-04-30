@@ -1,21 +1,17 @@
 package main;
 
+import main.LengthUnit;
+import main.WeightUnit;
+
 public class QuantityMeasurementApp {
-    public static <U extends IMeasurable> boolean demonstrateEquality(Quantity<U> q1, Quantity<U> q2) {
-        return q1.equals(q2);
-    }
-    public static <U extends IMeasurable> Quantity<U> demonstrateConversion(Quantity<U> q, U targetUnit) {
-        return q.convertTo(targetUnit);
-    }
-    public static <U extends IMeasurable> Quantity<U> demonstrateAddition(Quantity<U> q1, Quantity<U> q2, U targetUnit) {
-        return q1.add(q2, targetUnit);
-    }
     public static void main(String[] args) {
-        Quantity<LengthUnit> l1 = new Quantity<>(1.0, LengthUnit.FEET);
-        Quantity<LengthUnit> l2 = new Quantity<>(12.0, LengthUnit.INCHES);
-        System.out.println(l1.add(l2, LengthUnit.FEET));
-        Quantity<WeightUnit> w1 = new Quantity<>(1.0, WeightUnit.KILOGRAM);
-        Quantity<WeightUnit> w2 = new Quantity<>(1000.0, WeightUnit.GRAM);
-        System.out.println(w1.add(w2, WeightUnit.KILOGRAM));
+        Quantity<LengthUnit> length = new Quantity<>(1.0, LengthUnit.FEET);
+        System.out.println(length.convertTo(LengthUnit.INCHES));
+        Quantity<WeightUnit> weight = new Quantity<>(1.0, WeightUnit.KILOGRAM);
+        System.out.println(weight.convertTo(WeightUnit.GRAM));
+        Quantity<VolumeUnit> v1 = new Quantity<>(1.0, VolumeUnit.LITRE);
+        Quantity<VolumeUnit> v2 = new Quantity<>(1000.0, VolumeUnit.MILLILITRE);
+        System.out.println(v1.equals(v2)); // true
+        System.out.println(v1.add(v2));     // 2 L
     }
 }

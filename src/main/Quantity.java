@@ -19,9 +19,6 @@ public class Quantity<U extends IMeasurable> {
         return unit;
     }
     public Quantity<U> convertTo(U targetUnit) {
-        if (targetUnit == null) {
-            throw new IllegalArgumentException("Target unit cannot be null");
-        }
         double base = unit.convertToBaseUnit(value);
         double converted = targetUnit.convertFromBaseUnit(base);
         return new Quantity<>(round(converted), targetUnit);
@@ -30,10 +27,9 @@ public class Quantity<U extends IMeasurable> {
         return add(other, this.unit);
     }
     public Quantity<U> add(Quantity<U> other, U targetUnit) {
-        if (other == null || targetUnit == null) {
-            throw new IllegalArgumentException("Null not allowed");
-        }
-        double sumBase = this.unit.convertToBaseUnit(this.value) + other.unit.convertToBaseUnit(other.value);
+        double base1 = this.unit.convertToBaseUnit(this.value);
+        double base2 = other.unit.convertToBaseUnit(other.value);
+        double sumBase = base1 + base2;
         double result = targetUnit.convertFromBaseUnit(sumBase);
         return new Quantity<>(round(result), targetUnit);
     }
@@ -43,18 +39,17 @@ public class Quantity<U extends IMeasurable> {
         if (this == obj) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
         Quantity<?> other = (Quantity<?>) obj;
-        if (!this.unit.getClass().equals(other.unit.getClass())) return false;
         double thisBase = this.unit.convertToBaseUnit(this.value);
-        double otherBase = other.unit.convertToBaseUnit(other.getValue());
-        return Double.compare(thisBase, otherBase) == 0;
+        double otherBase = other.unit.convertToBaseUnit(other.value);
+        return Math.abs(thisBase - otherBase) < 0.000001;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(unit.getClass(), unit.convertToBaseUnit(value));
+        return Objects.hash(unit.getClass(), round(unit.convertToBaseUnit(value)));
     }
     private double round(double val) {
-        return Math.round(val * 1e6) / 1e6;
+        return Math.round(val * 100.0) / 100.0;
     }
 
     @Override
