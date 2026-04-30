@@ -6,20 +6,45 @@ public class Quantity<U extends IMeasurable> {
     private final double value;
     private final U unit;
     public Quantity(double value, U unit) {
-        if (unit == null || !Double.isFinite(value)) {
+        if (unit == null || Double.isNaN(value) || Double.isInfinite(value)) {
             throw new IllegalArgumentException("Invalid value or unit");
         }
         this.value = value;
         this.unit = unit;
     }
-    public double getValue() {
-        return value;
+    private double toBase() {
+        return unit.convertToBaseUnit(value);
     }
-    public U getUnit() {
-        return unit;
+    private double fromBase(double baseValue, U targetUnit) {
+        return targetUnit.convertFromBaseUnit(baseValue);
+    }
+    private double round(double val) {
+        return Math.round(val * 100.0) / 100.0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Quantity<?> other)) return false;
+        if (!this.unit.getClass().equals(other.unit.getClass())) {
+            return false;
+        }
+        double thisBase = this.toBase();
+        double otherBase = other.toBase();
+        return Math.abs(thisBase - otherBase) < 0.0001;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(unit.getClass(), round(toBase()));
+    }
+
+    @Override
+    public String toString() {
+        return "Quantity(" + value + ", " + unit.getUnitName() + ")";
     }
     public Quantity<U> convertTo(U targetUnit) {
-        double base = unit.convertToBaseUnit(value);
+        double base = toBase();
         double converted = targetUnit.convertFromBaseUnit(base);
         return new Quantity<>(round(converted), targetUnit);
     }
@@ -27,33 +52,34 @@ public class Quantity<U extends IMeasurable> {
         return add(other, this.unit);
     }
     public Quantity<U> add(Quantity<U> other, U targetUnit) {
-        double base1 = this.unit.convertToBaseUnit(this.value);
-        double base2 = other.unit.convertToBaseUnit(other.value);
-        double sumBase = base1 + base2;
-        double result = targetUnit.convertFromBaseUnit(sumBase);
+        validateSameCategory(other);
+        double resultBase = this.toBase() + other.toBase();
+        double result = targetUnit.convertFromBaseUnit(resultBase);
         return new Quantity<>(round(result), targetUnit);
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
-        Quantity<?> other = (Quantity<?>) obj;
-        double thisBase = this.unit.convertToBaseUnit(this.value);
-        double otherBase = other.unit.convertToBaseUnit(other.value);
-        return Math.abs(thisBase - otherBase) < 0.000001;
+    public Quantity<U> subtract(Quantity<U> other) {
+        return subtract(other, this.unit);
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(unit.getClass(), round(unit.convertToBaseUnit(value)));
+    public Quantity<U> subtract(Quantity<U> other, U targetUnit) {
+        validateSameCategory(other);
+        double resultBase = this.toBase() - other.toBase();
+        double result = targetUnit.convertFromBaseUnit(resultBase);
+        return new Quantity<>(round(result), targetUnit);
     }
-    private double round(double val) {
-        return Math.round(val * 100.0) / 100.0;
+    public double divide(Quantity<U> other) {
+        validateSameCategory(other);
+        double divisor = other.toBase();
+        if (Math.abs(divisor) < 0.0001) {
+            throw new ArithmeticException("Cannot divide by zero quantity");
+        }
+        return this.toBase() / divisor;
     }
-
-    @Override
-    public String toString() {
-        return "Quantity(" + value + ", " + unit.getUnitName() + ")";
+    private void validateSameCategory(Quantity<?> other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Quantity cannot be null");
+        }
+        if (!this.unit.getClass().equals(other.unit.getClass())) {
+            throw new IllegalArgumentException("Different measurement categories not allowed");
+        }
     }
 }
